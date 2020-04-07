@@ -120,6 +120,8 @@ const runsOnKeys = function (func, keys) {
 };
 
 window.addEventListener('load', function () {
+  setInfo();
+
   if (localStorage.getItem('currentLang')) {
     currentLang = localStorage.getItem('currentLang');
   }
@@ -335,3 +337,14 @@ const renderKeyboard = function (lang) {
 
   keyboardButtons = document.querySelectorAll('.keyboard__key');
 }
+
+const setInfo = function () {
+  let title = document.createElement('h1');
+  title.classList.add('info__title');
+  title.textContent = 'RSS Virtual Keyboard';
+
+  let info = document.createElement('p');
+  info.classList.add('info__description');
+  info.textContent = 'Клавиатура создана в операционной системе Windows. Для переключения языка комбинация: левыe Shift + Alt';
+  document.body.append(title, info);
+};

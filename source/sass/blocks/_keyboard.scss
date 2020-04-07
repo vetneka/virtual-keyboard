@@ -1,0 +1,54 @@
+.keyboard {
+  width: 80%;
+  max-width: 1000px;
+  margin: 0 auto;
+  background-color: #0479da;
+  text-align: center;
+}
+
+.keyboard__key {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  margin: 3px;
+  border: none;
+  background-color: tomato;
+
+  font-size: 1rem;
+  text-align: center;
+  vertical-align: middle;
+
+  color: white;
+
+  &--active {
+    background-color: navy;
+  }
+
+  &--size-1 {
+    width: 7%;
+  }
+
+  &--size-2 {
+    width: 8%;
+  }
+
+  &--size-3 {
+    width: 11%;
+  }
+
+  &--size-4 {
+    width: 13%;
+  }
+
+  &--size-5 {
+    width: 15%;
+  }
+
+  &--size-6 {
+    width: 16%;
+  }
+
+  &--size-7 {
+    width: 31%;
+  }
+}

@@ -38,12 +38,19 @@ const layout = {
   }
 };
 
+const serviceKeys = [
+  'Tab', 'CapsLock', 'ShiftLeft', 'ShiftRight', 'Ctrl', 'Fn',
+  'Win', 'Alt', 'Space', 'Menu', 'Enter', 'Backspace',
+];
+
 const langs = {
   'english': true,
   'russian': false,
 };
 
 let currentLang = 'english';
+let isCapslockPress = false;
+let isShiftPress = false;
 
 const changeLang = function (evt) {
   for (let lang in langs) {
@@ -90,6 +97,26 @@ window.addEventListener('load', function () {
   renderKeyboard(currentLang);
 
   runsOnKeys(changeLang, ['Shift', 'Alt']);
+
+  document.addEventListener('keydown', function (evt) {
+    if (evt.key === 'CapsLock') {
+      isCapslockPress === true ? isCapslockPress = false : isCapslockPress = true;
+      renderKeyboard(currentLang)
+      console.log('CapsLock press');
+    }
+
+    if (evt.key === 'Shift') {
+      isShiftPress = true;
+      renderKeyboard(currentLang);
+      isShiftPress = false;
+    }
+  });
+
+  document.addEventListener('keyup', function (evt) {
+    if (evt.key === 'Shift') {
+      renderKeyboard(currentLang);
+    }
+  });
 });
 
 const createTextarea = function () {
@@ -109,7 +136,13 @@ const createKeyboard = function (layout) {
     let button = createButton(value);
     keysFragment.append(button);
 
-    if (value === 'Backspace' || value === '\\' || value === 'Enter' || value === 'ShiftRight') {
+    if (value === 'Backspace' ||
+        value === '\\' ||
+        value === '|' ||
+        value === 'Enter' ||
+        value === 'ShiftRight' ||
+        (value === '/' && currentLang === 'russian')
+    ) {
       const br = document.createElement('br');
       keysFragment.appendChild(br);
     }
@@ -158,6 +191,10 @@ const createButton = function (value) {
       break;
   }
 
+  if (isCapslockPress && !serviceKeys.includes(value)) {
+    button.textContent = value.toUpperCase();
+  }
+
   return button;
 };
 
@@ -166,7 +203,13 @@ const renderKeyboard = function (lang) {
   if (oldKeyboard) {
     oldKeyboard.remove();
   }
+  let keyboard;
 
-  const keyboard = createKeyboard(layout[lang].default);
+  if (isShiftPress) {
+    keyboard = createKeyboard(layout[lang].shift);
+  } else {
+    keyboard = createKeyboard(layout[lang].default);
+  }
+
   document.body.appendChild(keyboard);
 }

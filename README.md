@@ -1,16 +1,24 @@
-# Gulp template Liga A
-## Краткая инструкция по работе
-### Для начала работы у вас должент быть установлен:
-* Node.js v.10.15.3
-* Gulp v4
-* npm last version
-## Основные команды для работы
-* Установка - `npm i`
-* Запуск локального сервера - `npm start`
-* Сборка проекта без запуска локального сервера - `npm run-script build`
-* Запуск тестирования на соответствия код-гайдам - `npm test`
+# VirtualKeyboard - учебный проект в The Rolling Scopes School
 
-## Все разработка ведёться в директории `source`
-## Итоговый код попадает в директорию `build`
+#### Информация для проверяющих задание в рамках "Cross-check"
+В ветке `master` находится готовый проект. Так же он опубликован на `gh-pages`, посмотреть можно по ссылке [Virtual Keyboard](https://vetneka.github.io/virtual-keyboard/).
 
-Если у вас есть желание что-то изменить или улучшить, пожалуйста, открывайте pull request с вашими комментариями.
+Доступна сборка в ветке [`task-execution`](https://github.com/vetneka/virtual-keyboard/tree/task-execution). 
+
+Для запуска сборки нужно склонировать репозиторий:
+```
+$ git clone git@github.com:vetneka/virtual-keyboard.git
+```
+перейти в папку с проектом и выполнить:
+```
+$ git checkout task-execution
+```
+установить зависимости:
+```
+$ npm install
+```
+запустить сборку:
+```
+$ npm start
+```
+PROFIT!

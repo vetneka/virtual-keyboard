@@ -109,7 +109,6 @@ const runsOnKeys = function (func, keys) {
     });
 
     if (isTrueKombo) {
-      console.log('combo')
       pressed = [];
       func();
     }
@@ -169,7 +168,6 @@ window.addEventListener('load', function () {
 const writeOnTextarea = function () {
   let textarea = document.querySelector('.textarea');
   let currentButton = document.querySelector('.keyboard__key--active');
-  console.log(currentButton)
 
   if (serviceKeys.hasOwnProperty(currentButton.dataset.code)) {
     let currentButtonCode = currentButton.dataset.code;
@@ -221,7 +219,6 @@ const onCapsLockKeydown = function (evt) {
     }
 
     renderKeyboard(currentLang);
-    console.log('CapsLock press');
   }
 };
 

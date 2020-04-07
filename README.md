@@ -1,5 +1,6 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 # VirtualKeyboard - учебный проект в The Rolling Scopes School
 
 #### Информация для проверяющих задание в рамках "Cross-check"
@@ -49,6 +50,15 @@ PROFIT!
 =======
 Доступна сборка в ветке [`task-execution`](https://github.com/vetneka/virtual-keyboard/tree/task-execution). 
 
+=======
+# VirtualKeyboard - учебный проект в The Rolling Scopes School
+
+#### Информация для проверяющих задание в рамках "Cross-check"
+В ветке `master` находится готовый проект. Так же он опубликован на `gh-pages`, посмотреть можно по ссылке [Virtual Keyboard](https://vetneka.github.io/virtual-keyboard/).
+
+Доступна сборка в ветке [`task-execution`](https://github.com/vetneka/virtual-keyboard/tree/task-execution). 
+
+>>>>>>> c3dd467... doc - add documentation
 Для запуска сборки нужно склонировать репозиторий:
 ```
 $ git clone git@github.com:vetneka/virtual-keyboard.git
@@ -66,4 +76,7 @@ $ npm install
 $ npm start
 ```
 PROFIT!
+<<<<<<< HEAD
 >>>>>>> 83d4c2d... doc(keyboard) - add documentation
+=======
+>>>>>>> c3dd467... doc - add documentation

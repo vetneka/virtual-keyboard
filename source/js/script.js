@@ -52,6 +52,8 @@ let currentLang = 'english';
 let isCapslockPress = false;
 let isShiftPress = false;
 
+let keyboardKeys;
+
 const changeLang = function (evt) {
   for (let lang in langs) {
     langs[lang] === true ? langs[lang] = false : langs[lang] = true;
@@ -99,25 +101,71 @@ window.addEventListener('load', function () {
   runsOnKeys(changeLang, ['Shift', 'Alt']);
 
   document.addEventListener('keydown', function (evt) {
-    if (evt.key === 'CapsLock') {
-      isCapslockPress === true ? isCapslockPress = false : isCapslockPress = true;
-      renderKeyboard(currentLang)
-      console.log('CapsLock press');
-    }
+    console.log(evt);
+    onCapsLockKeydown(evt);
+    onShiftKeydown(evt);
 
-    if (evt.key === 'Shift') {
-      isShiftPress = true;
-      renderKeyboard(currentLang);
-      isShiftPress = false;
-    }
+    addLightButton(evt, keyboardKeys);
   });
 
   document.addEventListener('keyup', function (evt) {
-    if (evt.key === 'Shift') {
-      renderKeyboard(currentLang);
-    }
+    onShiftKeyup(evt);
+
+    removeLightButton(evt, keyboardKeys);
   });
 });
+
+const addLightButton = function (evt, keys) {
+  let currentKey = evt.key;
+  let currentButton;
+
+  keys.forEach(key => {
+    let buttonValue = key.textContent;
+
+    if (currentKey.toLowerCase() === buttonValue.toLowerCase()) {
+      currentButton = key;
+    }
+  })
+
+  currentButton.classList.add('keyboard__key--active');
+};
+
+const removeLightButton = function (evt, keys) {
+  let currentKey = evt.key;
+  let currentButton;
+
+  keys.forEach(key => {
+    let buttonValue = key.textContent;
+
+    if (currentKey.toLowerCase() === buttonValue.toLowerCase()) {
+      currentButton = key;
+    }
+  })
+
+  currentButton.classList.remove('keyboard__key--active');
+};
+
+const onCapsLockKeydown = function (evt) {
+  if (evt.key === 'CapsLock') {
+    isCapslockPress === true ? isCapslockPress = false : isCapslockPress = true;
+    renderKeyboard(currentLang)
+    console.log('CapsLock press');
+  }
+};
+
+const onShiftKeydown = function (evt) {
+  if (evt.key === 'Shift') {
+    isShiftPress = true;
+    renderKeyboard(currentLang);
+    isShiftPress = false;
+  }
+};
+
+const onShiftKeyup = function (evt) {
+  if (evt.key === 'Shift') {
+    renderKeyboard(currentLang);
+  }
+};
 
 const createTextarea = function () {
   const textarea = document.createElement('textarea');
@@ -212,4 +260,6 @@ const renderKeyboard = function (lang) {
   }
 
   document.body.appendChild(keyboard);
+
+  keyboardKeys = document.querySelectorAll('.keyboard__key');
 }

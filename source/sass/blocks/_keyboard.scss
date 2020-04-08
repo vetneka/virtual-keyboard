@@ -1,0 +1,63 @@
+.keyboard {
+  width: 700px;
+  margin: 0 auto;
+  background-color: rgb(26, 26, 26);
+  text-align: center;
+}
+
+.keyboard__key {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  margin: 3px;
+  border: none;
+  background-color: rgb(51, 51, 51);
+
+  font-size: 1.3rem;
+  text-align: center;
+  vertical-align: middle;
+
+  color: rgb(229, 229, 229);
+
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgb(229, 229, 229);
+    color: rgb(51, 51, 51);
+  }
+
+  &--active,
+  &:active {
+    background-color: rgb(0, 118, 215);
+  }
+
+  &--backspace,
+  &--capslock {
+    width: 90px;
+  }
+
+  &--backslash {
+    width: 60px;
+  }
+
+  &--enter {
+    width: 88px;
+  }
+
+  &--shift {
+    width: 91px;
+  }
+
+  &--shift-right {
+    width: 85px;
+  }
+
+  &--tab {
+    width: 70px;
+  }
+
+  &--space {
+    width: 229px;
+  }
+}

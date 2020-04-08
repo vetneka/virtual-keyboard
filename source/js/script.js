@@ -1,8 +1,8 @@
 'use strict';
 
-const layout = {
-  'english': {
-    'default': [
+const keyboardLayout = {
+  english: {
+    default: [
       '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace',
       'Tab', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\',
       'CapsLock', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', 'Enter',
@@ -10,7 +10,7 @@ const layout = {
       'Ctrl', 'Fn', 'Win', 'Alt', 'Space', 'Alt', 'Menu', '←', '↓', '→', 'Ctrl',
     ],
 
-    'shift': [
+    shift: [
       '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', 'Backspace',
       'Tab', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}', '|',
       'CapsLock', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '"', 'Enter',
@@ -19,8 +19,8 @@ const layout = {
     ],
   },
 
-  'russian': {
-    'default': [
+  russian: {
+    default: [
       'ё', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace',
       'Tab', 'й', 'ц', 'у', 'к', 'е', 'н', 'г', 'ш', 'щ', 'з', 'х', 'ъ', '\\',
       'CapsLock', 'ф', 'ы', 'в', 'а', 'п', 'р', 'о', 'л', 'д', 'ж', 'э', 'Enter',
@@ -28,14 +28,14 @@ const layout = {
       'Ctrl', 'Fn', 'Win', 'Alt', 'Space', 'Alt', 'Menu', '←', '↓', '→', 'Ctrl',
     ],
 
-    'shift': [
+    shift: [
       'Ё', '!', '"', '№', '$;', '%', ':', '?', '*', '(', ')', '_', '+', 'Backspace',
       'Tab', 'Й', 'Ц', 'У', 'К', 'Е', 'Н', 'Г', 'Ш', 'Щ', 'З', 'Х', 'Ъ', '/',
       'CapsLock', 'Ф', 'Ы', 'В', 'А', 'П', 'Р', 'О', 'Л', 'Д', 'Ж', 'Э', 'Enter',
       'Shift', 'Я', 'Ч', 'С', 'М', 'И', 'Т', 'Ь', 'Б', 'Ю', ',', '↑', 'Shift',
       'Ctrl', 'Fn', 'Win', 'Alt', 'Space', 'Alt', 'Menu', '←', '↓', '→', 'Ctrl',
     ],
-  }
+  },
 };
 
 const layoutKeysCode = [
@@ -47,31 +47,32 @@ const layoutKeysCode = [
 ];
 
 const serviceKeys = {
-  'Tab': '\t',
-  'Space': ' ',
-  'Enter': '\n',
-  'CapsLock': '',
-  'ControlLeft': '',
-  'Fn': '',
-  'MetaLeft': '',
-  'ShiftLeft': '',
-  'AltLeft': '',
-  'AltRight': '',
-  'ContextMenu': '',
-  'ControlRight': '',
-  'ShiftRight': '',
-  'Backspace': function (textarea) {
-    let textareaContent = textarea.textContent;
+  Tab: '\t',
+  Space: ' ',
+  Enter: '\n',
+  CapsLock: '',
+  ControlLeft: '',
+  Fn: '',
+  MetaLeft: '',
+  ShiftLeft: '',
+  AltLeft: '',
+  AltRight: '',
+  ContextMenu: '',
+  ControlRight: '',
+  ShiftRight: '',
+  Backspace: (textarea) => {
+    const textareaContent = textarea.textContent;
+    // eslint-disable-next-line no-param-reassign
     textarea.textContent = textareaContent.substring(0, textareaContent.length - 1);
   },
 };
 
 const langs = {
-  'english': true,
-  'russian': false,
+  english: true,
+  russian: false,
 };
 
-let myStorage = window.localStorage;
+const myStorage = window.localStorage;
 
 let currentLang = 'english';
 let isCapslockPress = false;
@@ -79,200 +80,7 @@ let isShiftPress = false;
 
 let keyboardButtons;
 
-window.addEventListener('load', function () {
-  setInfo();
-
-  if (localStorage.getItem('currentLang')) {
-    currentLang = localStorage.getItem('currentLang');
-  }
-
-  const textarea = createTextarea();
-  document.body.appendChild(textarea);
-
-  renderKeyboard(currentLang);
-
-  document.addEventListener('mousedown', function (evt) {
-    if (layoutKeysCode.includes(evt.target.dataset.code)) {
-      onCapsLockKeydown(evt);
-
-      onClickKeyboardButton(evt);
-      writeOnTextarea(evt.target.dataset.code);
-    }
-  });
-
-  document.addEventListener('keydown', function (evt) {
-    if (layoutKeysCode.includes(evt.code)) {
-      evt.preventDefault();
-
-      onCapsLockKeydown(evt);
-      onShiftKeydown(evt);
-
-      onPressKeyboardButton(evt, keyboardButtons);
-      writeOnTextarea(evt.code);
-    }
-  });
-
-  document.addEventListener('keyup', function (evt) {
-    if (layoutKeysCode.includes(evt.code)) {
-      onShiftKeyup(evt);
-      onPressKeyboardButton(evt, keyboardButtons, false);
-    }
-  });
-
-  runsOnKeys(onChangeLang, ['Shift', 'Alt']);
-});
-
-const onChangeLang = function () {
-  for (let lang in langs) {
-    langs[lang] === true ? langs[lang] = false : langs[lang] = true;
-  }
-
-  for (let lang in langs) {
-    if (langs[lang] === true) {
-      currentLang = lang;
-      myStorage.setItem('currentLang', currentLang);
-    }
-  }
-
-  renderKeyboard(currentLang);
-};
-
-const runsOnKeys = function (func, keys) {
-  let pressed = [];
-
-  document.addEventListener('keydown', function (evt) {
-    let pressedKey = evt.key;
-
-    if (!pressed.includes(pressedKey)) {
-      pressed.push(pressedKey);
-    }
-
-    let isTrueKombo = keys.every(key => {
-      return pressed.includes(key);
-    });
-
-    if (isTrueKombo) {
-      pressed = [];
-      func();
-    }
-  });
-
-  document.addEventListener('keyup', function (evt) {
-    pressed = [];
-  });
-};
-
-const writeOnTextarea = function (buttonCode) {
-  let textarea = document.querySelector('.textarea');
-  let currentButton = document.querySelector(`button[data-code="${buttonCode}"]`);
-
-  if (serviceKeys.hasOwnProperty(currentButton.dataset.code)) {
-    let currentButtonCode = currentButton.dataset.code;
-
-    if (currentButtonCode === 'Backspace') {
-      let onBackspace = serviceKeys[currentButtonCode];
-      onBackspace(textarea);
-    } else {
-      textarea.textContent += serviceKeys[currentButtonCode];
-    }
-
-  } else {
-    textarea.textContent += currentButton.textContent;
-  }
-};
-
-const onPressKeyboardButton = function (evt, buttons, isAddLight = true) {
-  let currentButton;
-
-  buttons.forEach(button => {
-    if (evt.code === button.dataset.code) {
-      currentButton = button;
-    }
-  })
-
-  if (isAddLight) {
-    currentButton.classList.add('keyboard__key--active');
-  } else {
-    currentButton.classList.remove('keyboard__key--active');
-
-    if (evt.code === 'CapsLock' && isCapslockPress) {
-      currentButton.classList.add('keyboard__key--active');
-    }
-  }
-};
-
-const onClickKeyboardButton = function (evt) {
-  let currentButton = evt.target;
-  console.log(currentButton)
-
-  if (!currentButton.classList.contains('keyboard__key')) return;
-
-  currentButton.classList.add('keyboard__key--active');
-
-  currentButton.addEventListener('mouseout', function () {
-    currentButton.classList.remove('keyboard__key--active');
-  });
-};
-
-const onCapsLockKeydown = function (evt) {
-  if (evt.key === 'CapsLock' || evt.target.dataset.code === 'CapsLock') {
-    if (isCapslockPress === true) {
-      isCapslockPress = false;
-    } else {
-      isCapslockPress = true;
-    }
-
-    renderKeyboard(currentLang);
-  }
-};
-
-const onShiftKeydown = function (evt) {
-  if (evt.key === 'Shift') {
-    isShiftPress = true;
-    renderKeyboard(currentLang);
-    isShiftPress = false;
-  }
-};
-
-const onShiftKeyup = function (evt) {
-  if (evt.key === 'Shift') {
-    renderKeyboard(currentLang);
-  }
-};
-
-const createTextarea = function () {
-  const textarea = document.createElement('textarea');
-  textarea.classList.add('textarea');
-
-  return textarea;
-};
-
-const createKeyboard = function (layout) {
-  const keyboard = document.createElement('div');
-  keyboard.classList.add('keyboard');
-
-  let keysFragment = document.createDocumentFragment();
-
-  layout.forEach((value, index) => {
-    let button = createButton(value, layoutKeysCode[index]);
-    keysFragment.append(button);
-
-    if (button.dataset.code === 'Backspace' ||
-        button.dataset.code === 'Backslash' ||
-        button.dataset.code === 'Enter' ||
-        button.dataset.code === 'ShiftRight'
-    ) {
-      const br = document.createElement('br');
-      keysFragment.appendChild(br);
-    }
-  })
-
-  keyboard.append(keysFragment);
-
-  return keyboard;
-};
-
-const createButton = function (value, code) {
+const createButton = (value, code) => {
   const button = document.createElement('button');
   button.setAttribute('type', 'button');
   button.textContent = value;
@@ -321,7 +129,7 @@ const createButton = function (value, code) {
       break;
   }
 
-  if (isCapslockPress && !serviceKeys.hasOwnProperty(code)) {
+  if (isCapslockPress && !(code in serviceKeys)) {
     button.textContent = value.toUpperCase();
   }
 
@@ -332,7 +140,32 @@ const createButton = function (value, code) {
   return button;
 };
 
-const renderKeyboard = function (lang) {
+const createKeyboard = (layout) => {
+  const keyboard = document.createElement('div');
+  keyboard.classList.add('keyboard');
+
+  const keysFragment = document.createDocumentFragment();
+
+  layout.forEach((value, index) => {
+    const button = createButton(value, layoutKeysCode[index]);
+    keysFragment.append(button);
+
+    if (button.dataset.code === 'Backspace'
+        || button.dataset.code === 'Backslash'
+        || button.dataset.code === 'Enter'
+        || button.dataset.code === 'ShiftRight'
+    ) {
+      const br = document.createElement('br');
+      keysFragment.appendChild(br);
+    }
+  });
+
+  keyboard.append(keysFragment);
+
+  return keyboard;
+};
+
+const renderKeyboard = (lang) => {
   const oldKeyboard = document.querySelector('.keyboard');
 
   if (oldKeyboard) {
@@ -342,23 +175,190 @@ const renderKeyboard = function (lang) {
   let keyboard;
 
   if (isShiftPress) {
-    keyboard = createKeyboard(layout[lang].shift);
+    keyboard = createKeyboard(keyboardLayout[lang].shift);
   } else {
-    keyboard = createKeyboard(layout[lang].default);
+    keyboard = createKeyboard(keyboardLayout[lang].default);
   }
 
   document.body.appendChild(keyboard);
 
   keyboardButtons = document.querySelectorAll('.keyboard__key');
-}
+};
 
-const setInfo = function () {
-  let title = document.createElement('h1');
+const onChangeLang = () => {
+  Object.keys(langs).forEach((lang) => {
+    if (langs[lang] === true) {
+      langs[lang] = false;
+    } else {
+      langs[lang] = true;
+    }
+  });
+
+  Object.keys(langs).forEach((lang) => {
+    if (langs[lang] === true) {
+      currentLang = lang;
+      myStorage.setItem('currentLang', currentLang);
+    }
+  });
+
+  renderKeyboard(currentLang);
+};
+
+const runsOnKeys = (func, keys) => {
+  let pressed = [];
+
+  document.addEventListener('keydown', (evt) => {
+    const pressedKey = evt.key;
+
+    if (!pressed.includes(pressedKey)) {
+      pressed.push(pressedKey);
+    }
+
+    const isTrueKombo = keys.every((key) => pressed.includes(key));
+
+    if (isTrueKombo) {
+      pressed = [];
+      func();
+    }
+  });
+
+  document.addEventListener('keyup', () => {
+    pressed = [];
+  });
+};
+
+const writeOnTextarea = (buttonCode) => {
+  const textarea = document.querySelector('.textarea');
+  const currentButton = document.querySelector(`button[data-code="${buttonCode}"]`);
+  const currentButtonCode = currentButton.dataset.code;
+
+  if (currentButtonCode in serviceKeys) {
+    if (currentButtonCode === 'Backspace') {
+      const onBackspace = serviceKeys[currentButtonCode];
+      onBackspace(textarea);
+    } else {
+      textarea.textContent += serviceKeys[currentButtonCode];
+    }
+  } else {
+    textarea.textContent += currentButton.textContent;
+  }
+};
+
+const onPressKeyboardButton = (evt, buttons, isAddLight = true) => {
+  let currentButton;
+
+  buttons.forEach((button) => {
+    if (evt.code === button.dataset.code) {
+      currentButton = button;
+    }
+  });
+
+  if (isAddLight) {
+    currentButton.classList.add('keyboard__key--active');
+  } else {
+    currentButton.classList.remove('keyboard__key--active');
+
+    if (evt.code === 'CapsLock' && isCapslockPress) {
+      currentButton.classList.add('keyboard__key--active');
+    }
+  }
+};
+
+const onClickKeyboardButton = (evt) => {
+  const currentButton = evt.target;
+
+  if (!currentButton.classList.contains('keyboard__key')) return;
+
+  currentButton.classList.add('keyboard__key--active');
+
+  currentButton.addEventListener('mouseout', () => {
+    currentButton.classList.remove('keyboard__key--active');
+  });
+};
+
+const onCapsLockKeydown = (evt) => {
+  if (evt.key === 'CapsLock' || evt.target.dataset.code === 'CapsLock') {
+    if (isCapslockPress === true) {
+      isCapslockPress = false;
+    } else {
+      isCapslockPress = true;
+    }
+
+    renderKeyboard(currentLang);
+  }
+};
+
+const onShiftKeydown = (evt) => {
+  if (evt.key === 'Shift') {
+    isShiftPress = true;
+    renderKeyboard(currentLang);
+    isShiftPress = false;
+  }
+};
+
+const onShiftKeyup = (evt) => {
+  if (evt.key === 'Shift') {
+    renderKeyboard(currentLang);
+  }
+};
+
+const createTextarea = () => {
+  const textarea = document.createElement('textarea');
+  textarea.classList.add('textarea');
+
+  return textarea;
+};
+
+const setInfo = () => {
+  const title = document.createElement('h1');
   title.classList.add('info__title');
   title.textContent = 'RSS Virtual Keyboard';
 
-  let info = document.createElement('p');
+  const info = document.createElement('p');
   info.classList.add('info__description');
   info.textContent = 'Клавиатура создана в операционной системе Windows. Для переключения языка комбинация: левыe Shift + Alt';
   document.body.append(title, info);
 };
+
+window.addEventListener('load', () => {
+  setInfo();
+
+  if (localStorage.getItem('currentLang')) {
+    currentLang = localStorage.getItem('currentLang');
+  }
+
+  const textarea = createTextarea();
+  document.body.appendChild(textarea);
+
+  renderKeyboard(currentLang);
+
+  document.addEventListener('mousedown', (evt) => {
+    if (layoutKeysCode.includes(evt.target.dataset.code)) {
+      onCapsLockKeydown(evt);
+
+      onClickKeyboardButton(evt);
+      writeOnTextarea(evt.target.dataset.code);
+    }
+  });
+
+  document.addEventListener('keydown', (evt) => {
+    if (layoutKeysCode.includes(evt.code)) {
+      evt.preventDefault();
+
+      onCapsLockKeydown(evt);
+      onShiftKeydown(evt);
+
+      onPressKeyboardButton(evt, keyboardButtons);
+      writeOnTextarea(evt.code);
+    }
+  });
+
+  document.addEventListener('keyup', (evt) => {
+    if (layoutKeysCode.includes(evt.code)) {
+      onShiftKeyup(evt);
+      onPressKeyboardButton(evt, keyboardButtons, false);
+    }
+  });
+
+  runsOnKeys(onChangeLang, ['Shift', 'Alt']);
+});
